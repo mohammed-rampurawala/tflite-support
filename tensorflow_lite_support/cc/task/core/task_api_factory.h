@@ -43,7 +43,7 @@ class TaskAPIFactory {
   static tflite::support::StatusOr<std::unique_ptr<T>> CreateFromBuffer(
       const char* buffer_data, size_t buffer_size,
       std::unique_ptr<tflite::OpResolver> resolver =
-          absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>(),
+          absl::make_unique<tflite_shims::ops::builtin::BuiltinOpResolver>(),
       int num_threads = 1) {
     auto engine = absl::make_unique<TfLiteEngine>(std::move(resolver));
     RETURN_IF_ERROR(engine->BuildModelFromFlatBuffer(buffer_data, buffer_size));
@@ -54,7 +54,7 @@ class TaskAPIFactory {
   static tflite::support::StatusOr<std::unique_ptr<T>> CreateFromFile(
       const string& file_name,
       std::unique_ptr<tflite::OpResolver> resolver =
-          absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>(),
+          absl::make_unique<tflite_shims::ops::builtin::BuiltinOpResolver>(),
       int num_threads = 1) {
     auto engine = absl::make_unique<TfLiteEngine>(std::move(resolver));
     RETURN_IF_ERROR(engine->BuildModelFromFile(file_name));
@@ -65,7 +65,7 @@ class TaskAPIFactory {
   static tflite::support::StatusOr<std::unique_ptr<T>> CreateFromFileDescriptor(
       int file_descriptor,
       std::unique_ptr<tflite::OpResolver> resolver =
-          absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>(),
+          absl::make_unique<tflite_shims::ops::builtin::BuiltinOpResolver>(),
       int num_threads = 1) {
     auto engine = absl::make_unique<TfLiteEngine>(std::move(resolver));
     RETURN_IF_ERROR(engine->BuildModelFromFileDescriptor(file_descriptor));
@@ -77,7 +77,7 @@ class TaskAPIFactory {
   CreateFromExternalFileProto(
       const ExternalFile* external_file,
       std::unique_ptr<tflite::OpResolver> resolver =
-          absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>(),
+          absl::make_unique<tflite_shims::ops::builtin::BuiltinOpResolver>(),
       int num_threads = 1) {
     auto engine = absl::make_unique<TfLiteEngine>(std::move(resolver));
     RETURN_IF_ERROR(engine->BuildModelFromExternalFileProto(external_file));

@@ -48,10 +48,14 @@ namespace nlclassifier {
 //     with one label per line, the number of labels should match the number of
 //     categories the model outputs.
 
+struct BertNLClassifierOptions {
+  // Max number of tokens to pass to the model.
+  int max_seq_len = 128;
+};
+
 class BertNLClassifier : public NLClassifier {
  public:
   using NLClassifier::NLClassifier;
-  // Max number of tokens to pass to the model.
   static constexpr int kMaxSeqLen = 128;
 
   // Factory function to create a BertNLClassifier from TFLite model with
@@ -59,6 +63,18 @@ class BertNLClassifier : public NLClassifier {
   static tflite::support::StatusOr<std::unique_ptr<BertNLClassifier>>
   CreateFromFile(
       const std::string& path_to_model_with_metadata,
+      std::unique_ptr<tflite::OpResolver> resolver =
+          absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>()) {
+    return CreateFromFileAndOptions(path_to_model_with_metadata, {},
+                                    std::move(resolver));
+  }
+
+  // Factory function to create a BertNLClassifier from TFLite model with
+  // metadata and BertNLClassifierOptions.
+  static tflite::support::StatusOr<std::unique_ptr<BertNLClassifier>>
+  CreateFromFileAndOptions(
+      const std::string& path_to_model_with_metadata,
+      const BertNLClassifierOptions& options,
       std::unique_ptr<tflite::OpResolver> resolver =
           absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>());
 
@@ -69,13 +85,39 @@ class BertNLClassifier : public NLClassifier {
       const char* model_with_metadata_buffer_data,
       size_t model_with_metadata_buffer_size,
       std::unique_ptr<tflite::OpResolver> resolver =
+          absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>()) {
+    return CreateFromBufferAndOptions(model_with_metadata_buffer_data,
+                                      model_with_metadata_buffer_size, {},
+                                      std::move(resolver));
+  }
+
+  // Factory function to create a BertNLClassifier from in memory buffer of a
+  // TFLite model with metadata and BertNLClassifierOptions.
+  static tflite::support::StatusOr<std::unique_ptr<BertNLClassifier>>
+  CreateFromBufferAndOptions(
+      const char* model_with_metadata_buffer_data,
+      size_t model_with_metadata_buffer_size,
+      const BertNLClassifierOptions& options,
+      std::unique_ptr<tflite::OpResolver> resolver =
           absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>());
 
   // Factory function to create a BertNLClassifier from the file descriptor of a
   // TFLite model with metadata.
   static tflite::support::StatusOr<std::unique_ptr<BertNLClassifier>>
   CreateFromFd(
-      int fd, std::unique_ptr<tflite::OpResolver> resolver =
+      int fd,
+      std::unique_ptr<tflite::OpResolver> resolver =
+          absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>()) {
+    return CreateFromFdAndOptions(fd, {}, std::move(resolver));
+  }
+
+  // Factory function to create a BertNLClassifier from the file descriptor of a
+  // TFLite model with metadata and BertNLClassifierOptions.
+  static tflite::support::StatusOr<std::unique_ptr<BertNLClassifier>>
+  CreateFromFdAndOptions(
+      int fd,
+      const BertNLClassifierOptions& options,
+      std::unique_ptr<tflite::OpResolver> resolver =
                   absl::make_unique<tflite::ops::builtin::BuiltinOpResolver>());
 
  protected:
@@ -92,9 +134,11 @@ class BertNLClassifier : public NLClassifier {
 
  private:
   // Initialize the API with the tokenizer and label files set in the metadata.
-  absl::Status InitializeFromMetadata();
+  absl::Status Initialize(const BertNLClassifierOptions& options);
 
   std::unique_ptr<tflite::support::text::tokenizer::Tokenizer> tokenizer_;
+
+  BertNLClassifierOptions options_;
 };
 
 }  // namespace nlclassifier

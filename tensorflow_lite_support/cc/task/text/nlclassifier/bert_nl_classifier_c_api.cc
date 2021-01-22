@@ -33,9 +33,15 @@ struct BertNLClassifier {
   std::unique_ptr<BertNLClassifierCPP> impl;
 };
 
-BertNLClassifier* BertNLClassifierFromFile(const char* model_path) {
-  auto classifier_status =
-      BertNLClassifierCPP::CreateFromFile(std::string(model_path));
+const struct BertNLClassifierOptions BertNLClassifierOptions_default = {128};
+
+BertNLClassifier* BertNLClassifierFromFileAndOptions(
+    const char* model_path, const struct BertNLClassifierOptions* options) {
+  auto classifier_status = BertNLClassifierCPP::CreateFromFileAndOptions(
+      std::string(model_path),
+      {
+           .max_seq_len = options->max_seq_len,
+       });
   if (classifier_status.ok()) {
     return new BertNLClassifier{.impl = std::unique_ptr<BertNLClassifierCPP>(
                                     dynamic_cast<BertNLClassifierCPP*>(
@@ -43,6 +49,11 @@ BertNLClassifier* BertNLClassifierFromFile(const char* model_path) {
   } else {
     return nullptr;
   }
+}
+
+BertNLClassifier* BertNLClassifierFromFile(const char* model_path) {
+  return BertNLClassifierFromFileAndOptions(model_path,
+                                            &BertNLClassifierOptions_default);
 }
 
 Categories* BertNLClassifierClassify(const BertNLClassifier* classifier,

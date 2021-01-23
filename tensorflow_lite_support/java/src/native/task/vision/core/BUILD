@@ -5,31 +5,25 @@ package(
     licenses = ["notice"],  # Apache 2.0
 )
 
-exports_files(["image_segmenter_jni.cc"])
+exports_files(["base_vision_api_jni.cc"])
 
 cc_library(
-    name = "image_segmenter_native",
+    name = "base_vision_api_native",
     srcs = [
-        ":libtask_vision_jni.so",
+        ":libbase_vision_jni.so",
     ],
 )
 
 tflite_jni_binary(
-    name = "libtask_vision_jni.so",
+    name = "libbase_vision_jni.so",
     srcs = [
-        "image_segmenter_jni.cc",
+        "base_vision_api_jni.cc",
     ],
     linkscript = "//tensorflow_lite_support/java:default_version_script.lds",
     deps = [
-        "//tensorflow_lite_support/cc/port:statusor",
-        "//tensorflow_lite_support/cc/task/vision:image_segmenter",
         "//tensorflow_lite_support/cc/task/vision/core:frame_buffer",
-        "//tensorflow_lite_support/cc/task/vision/proto:image_segmenter_options_proto_inc",
-        "//tensorflow_lite_support/cc/task/vision/proto:segmentations_proto_inc",
-        "//tensorflow_lite_support/cc/task/vision/utils:frame_buffer_common_utils",
         "//tensorflow_lite_support/cc/utils:jni_utils",
         "//tensorflow_lite_support/java/jni",
         "//tensorflow_lite_support/java/src/native/task/vision:jni_utils",
-        "@com_google_absl//absl/strings",
     ],
 )

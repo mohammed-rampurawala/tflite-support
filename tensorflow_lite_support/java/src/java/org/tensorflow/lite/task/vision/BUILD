@@ -14,6 +14,7 @@ android_library(
     name = "task_library_vision",
     srcs = [
         "//tensorflow_lite_support/java/src/java/org/tensorflow/lite/task/vision/classifier:image_classifier_src",
+        "//tensorflow_lite_support/java/src/java/org/tensorflow/lite/task/vision/core:base_vision_api_src",
         "//tensorflow_lite_support/java/src/java/org/tensorflow/lite/task/vision/detector:object_detector_src",
         "//tensorflow_lite_support/java/src/java/org/tensorflow/lite/task/vision/segmenter:image_segmenter_src",
     ],
@@ -25,8 +26,10 @@ android_library(
         "//tensorflow_lite_support/java:tensorflowlite_support_java",
         "//tensorflow_lite_support/java/src/java/org/tensorflow/lite/task/core:base_task_api",
         "//tensorflow_lite_support/java/src/native/task/vision:task_vision_native",
+        "//tensorflow_lite_support/java/src/native/task/vision/core:base_vision_api_native",
         "@com_google_auto_value",
         "@maven//:androidx_annotation_annotation",
+        "@org_checkerframework_qual",
         "@org_tensorflow//tensorflow/lite/java:tensorflowlite_java",
     ],
 )

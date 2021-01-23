@@ -24,6 +24,7 @@ android_library(
     deps = [
         "//tensorflow_lite_support/java:tensorflowlite_support_java",
         "//tensorflow_lite_support/java/src/java/org/tensorflow/lite/task/core:base_task_api",
+        "//tensorflow_lite_support/java/src/java/org/tensorflow/lite/task/vision/core:base_vision_api",
         "//tensorflow_lite_support/java/src/native/task/vision/segmenter:image_segmenter_native",
         "@com_google_auto_value",
         "@maven//:androidx_annotation_annotation",
